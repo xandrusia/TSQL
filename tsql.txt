@@ -1,0 +1,390 @@
+DROP table PatientsVisitors;
+DROP table DoctorSurgery;
+DROP table Surgery;
+DROP table PatientsCard;
+DROP table Patient;
+DROP table Visitors;
+DROP table Doctor;
+DROP TABLE DoctorHistory;
+
+-- tables
+-- Table: Doctor
+CREATE TABLE Doctor (
+    IdDoctor integer  NOT NULL,
+    docName varchar(40)  NOT NULL,
+    docSurname varchar(40)  NOT NULL,
+    specialization varchar(50)  NOT NULL,
+    phoneNumber varchar(9)  NOT NULL,
+    salary integer NOT NULL,
+    CONSTRAINT Doctor_pk PRIMARY KEY (IdDoctor)
+) ;
+
+
+CREATE TABLE DoctorHistory (
+    IdHDoctor integer  NOT NULL,
+    HdocName varchar(40)  NOT NULL,
+    HdocSurname varchar(40)  NOT NULL,
+    Hspecialization varchar(50)  NOT NULL,
+    HphoneNumber varchar(9)  NOT NULL,
+    Hsalary integer NOT NULL,
+    CONSTRAINT DoctorHistory_pk PRIMARY KEY (IdHDoctor)
+) ;
+
+-- Table: DoctorSurgery
+CREATE TABLE DoctorSurgery (
+    IdDSurgery integer  NOT NULL,
+    IdSurgery integer  NOT NULL,
+    IdDoctor integer  NOT NULL,
+    CONSTRAINT DoctorSurgery_pk PRIMARY KEY (IdDSurgery)
+) ;
+
+-- Table: Patient
+CREATE TABLE Patient (
+    IdPatient integer  NOT NULL,
+    Pname varchar(40)  NOT NULL,
+    Psurname varchar(40)  NOT NULL,
+    phoneNumber varchar(9) NOT NULL,
+    adress varchar(50)  NOT NULL,
+    city varchar(50)  NOT NULL,
+    zipCode varchar(10)  NOT NULL,
+    dateOfBirth date  NOT NULL,
+    CONSTRAINT Patient_pk PRIMARY KEY (IdPatient)
+) ;
+
+-- Table: PatientsCard
+CREATE TABLE PatientsCard (
+    IdPatientCard integer  NOT NULL,
+    diagnose varchar(50)  NOT NULL,
+    checkIn datetime  NOT NULL,
+    checkOut datetime  NOT NULL,
+    IdDoctor integer  NOT NULL,
+    IdPatient integer  NOT NULL,
+    CONSTRAINT PatientsCard_pk PRIMARY KEY (IdPatientCard)
+) ;
+
+-- Table: PatientsVisitors
+CREATE TABLE PatientsVisitors (
+    IdPVisitors integer  NOT NULL,
+    IdVisitors integer  NOT NULL,
+    IdPatient integer  NOT NULL,
+    CONSTRAINT PatientsVisitors_pk PRIMARY KEY (IdPVisitors)
+) ;
+
+-- Table: Surgery
+CREATE TABLE Surgery (
+    IdSurgery integer  NOT NULL,
+    startDate datetime  NOT NULL,
+    enddate datetime  NULL,
+    details varchar(50)  NOT NULL,
+    IdPatientCard integer  NOT NULL,
+    CONSTRAINT Surgery_pk PRIMARY KEY (IdSurgery)
+) ;
+
+-- Table: Visitors
+CREATE TABLE Visitors (
+    IdVisitors integer  NOT NULL,
+    visitorName varchar(50)  NOT NULL,
+    visitorSurname varchar(50)  NOT NULL,
+    startOfVisit datetime  NOT NULL,
+    endOfVisit datetime  NOT NULL,
+    CONSTRAINT Visitors_pk PRIMARY KEY (IdVisitors)
+) ;
+
+-- foreign keys
+-- Reference: DoctorSurgery_Doctor (table: DoctorSurgery)
+ALTER TABLE DoctorSurgery ADD CONSTRAINT DoctorSurgery_Doctor
+    FOREIGN KEY (IdDoctor)
+    REFERENCES Doctor (IdDoctor);
+
+-- Reference: DoctorSurgery_Surgery (table: DoctorSurgery)
+ALTER TABLE DoctorSurgery ADD CONSTRAINT DoctorSurgery_Surgery
+    FOREIGN KEY (IdSurgery)
+    REFERENCES Surgery (IdSurgery);
+
+-- Reference: PatientsCard_Doctor (table: PatientsCard)
+ALTER TABLE PatientsCard ADD CONSTRAINT PatientsCard_Doctor
+    FOREIGN KEY (IdDoctor)
+    REFERENCES Doctor (IdDoctor);
+
+-- Reference: PatientsCard_Patient (table: PatientsCard)
+ALTER TABLE PatientsCard ADD CONSTRAINT PatientsCard_Patient
+    FOREIGN KEY (IdPatient)
+    REFERENCES Patient (IdPatient);
+
+-- Reference: PatientsVisitors_Patient (table: PatientsVisitors)
+ALTER TABLE PatientsVisitors ADD CONSTRAINT PatientsVisitors_Patient
+    FOREIGN KEY (IdPatient)
+    REFERENCES Patient (IdPatient);
+
+-- Reference: PatientsVisitors_Visitors (table: PatientsVisitors)
+ALTER TABLE PatientsVisitors ADD CONSTRAINT PatientsVisitors_Visitors
+    FOREIGN KEY (IdVisitors)
+    REFERENCES Visitors (IdVisitors);
+
+-- Reference: Surgery_PatientsCard (table: Surgery)
+ALTER TABLE Surgery ADD CONSTRAINT Surgery_PatientsCard
+    FOREIGN KEY (IdPatientCard)
+    REFERENCES PatientsCard (IdPatientCard);
+
+-- End of file.
+
+
+INSERT INTO Patient VALUES(0, 'Adam', 'Caban','123456789', 'Polna 1', 'Gdynia', 89-599, '2000-06-12');
+INSERT INTO Patient VALUES(1, 'Maja', 'Kowalczyk', '234567890', 'Polna 5', 'Kobylanka', 89-500, '1997-03-08');
+INSERT INTO Patient VALUES(2, 'Ada', 'Koserow', '232456676', 'Mylna 2', 'Warszawa', 00-195, '1981-02-12');
+INSERT INTO Patient VALUES(3, 'Zygmunt', 'Kowalczyk','999777555', 'Polna 5', 'Kobylanka', 89-500, '1965-11-12');
+INSERT INTO Patient VALUES(4, 'Aleksa', 'Kowal', '434435437', 'Stodolna 9', 'Gniezno', 99-980, '2003-12-01');
+
+INSERT INTO Doctor  VALUES(0,'Jan', 'Malysko', 'surgeon', 123456789, 6500); 
+INSERT INTO Doctor  VALUES(1,'Bogdan', 'Mazurek', 'pediatrist', 122156745, 2800); 
+INSERT INTO Doctor  VALUES(2,'Magdalena', 'Zoja', 'psychologist', 123466789, 3100); 
+INSERT INTO Doctor  VALUES(3,'Aleksy', 'Malczynski', 'surgeon', 123400089, 6100); 
+
+
+
+INSERT INTO PatientsCard VALUES(0, 'medium-size tumor', '2019-01-01 06:30:04', '2019-01-24 17:00:50', 0, 3);
+INSERT INTO PatientsCard VALUES(1, 'therapy after trauma', '2019-01-01 18:50:40', '2019-01-24 21:17:00', 2, 2);
+INSERT INTO PatientsCard VALUES(2, 'overgrown tonsils', '2019-01-01 11:00:32', '2019-01-24 14:46:44', 0, 1);
+INSERT INTO PatientsCard VALUES(3, 'flu and varicose veins surgary', '2019-02-03 10:39:12', '2019-02-26 23:00:34', 1, 0);
+INSERT INTO PatientsCard VALUES(4, 'plague', '2019-03-03 22:23:09', '2019-03-20 6:22:14', 1, 4);
+
+INSERT INTO Surgery  VALUES(0, '2019-01-02 12:00:04', '2019-01-02 04:00:07', 'tumor removal', 0);
+INSERT INTO Surgery  VALUES(1, '2019-01-02 12:00:04', '2019-01-02 04:00:07', 'surgery for varicose veins', 0);
+INSERT INTO Surgery  VALUES(2, '2019-01-02 12:00:04', '2019-01-02 04:00:07', 'tonsillectomy', 2);
+
+
+INSERT INTO Visitors VALUES(0, 'Alina', 'Kowalczyk', '2019-01-02 10:00:00', '2019-01-02 11:00:20');
+INSERT INTO Visitors VALUES(1, 'Alina', 'Kowalczyk', '2019-01-02 06:00:00', '2019-01-02 09:00:20');
+INSERT INTO Visitors VALUES(2, 'Genowefa', 'Caban', '2019-02-05 10:00:00', '2019-02-05 11:00:20');
+INSERT INTO Visitors VALUES(3, 'Genowefa', 'Caban', '2019-02-24 12:00:00', '2019-02-24 04:00:20');
+INSERT INTO Visitors VALUES(4, 'Maciej', 'Koserow', '2019-01-06 10:00:00', '2019-01-06 12:30:20');
+INSERT INTO Visitors VALUES(5, 'Leon', 'Maciejczuk', '2019-01-20 10:20:00', '2019-01-20 11:50:20');
+INSERT INTO Visitors VALUES(6, 'Felicjusz', 'Zielony', '2019-01-13 10:15:00', '2019-01-13 11:31:20');
+INSERT INTO Visitors VALUES(7, 'Demian', 'Kowal', '2019-03-05 11:15:00', '2019-01-13 12:31:20');
+
+INSERT INTO PatientsVisitors VALUES(0, 0, 1); 
+INSERT INTO PatientsVisitors VALUES(1, 0, 1); 
+INSERT INTO PatientsVisitors VALUES(2, 2, 0); 
+INSERT INTO PatientsVisitors VALUES(3, 3, 0); 
+INSERT INTO PatientsVisitors VALUES(4, 4, 2); 
+INSERT INTO PatientsVisitors VALUES(5, 5, 2); 
+INSERT INTO PatientsVisitors VALUES(6, 6, 3); 
+INSERT INTO PatientsVisitors VALUES(7, 7, 4); 
+
+INSERT INTO DoctorSurgery  VALUES(0, 0, 0); 
+INSERT INTO DoctorSurgery  VALUES(1, 2, 0); 
+INSERT INTO DoctorSurgery  VALUES(2, 2, 0); 
+INSERT INTO DoctorSurgery  VALUES(3, 1, 0); 
+
+
+-----------------------------------------------------------------PROCEDURES------------------------------------------------------------------------------------------------------------------
+--1st procedure
+--changes specialization from psychologist to nurse
+drop procedure changeSpecialization;
+
+create procedure changeSpecialization 
+AS
+declare
+@oldd varchar(50);
+declare curss CURSOR 
+for select specialization from doctor where specialization = 'psychologist';
+begin
+--set @psychoCount = 0;
+open curss;
+while @@fetch_status = 0
+begin
+fetch curss into @oldd;
+UPDATE Doctor SET specialization='nurse' WHERE specialization=@oldd;
+--set @psychoCount = @psychoCount + 1;
+end;
+end;
+close curss;
+
+
+
+
+EXECUTE changeSpecialization;
+
+SELECT * FROM Doctor;
+
+
+--2nd procedure
+--raises salaries of pediatrist by 1.2 -- using result set
+create procedure raiseSalaries
+as
+declare cc cursor
+for select salary from Doctor where specialization='pediatrist' for update;
+declare @n int;
+begin
+open cc;
+fetch cc into @n;
+while @@fetch_status = 0
+begin
+update Doctor set salary=@n*1.2 where current of cc;
+fetch cc into @n;
+end;
+close cc;
+deallocate cc;
+select * from Doctor where specialization = 'pediatrist'; 
+end;
+
+
+drop procedure raiseSalaries;
+
+execute raiseSalaries;
+
+select*from Doctor;
+
+
+
+
+
+
+--3rd procedure
+--shows sum of salaries of given doctor's specialization
+create procedure SumOfSalaries @doc varchar(50)
+as
+declare @sum integer;
+declare @i integer;
+declare cur cursor
+for select salary from Doctor;
+declare specifiedSpec cursor for select salary from Doctor where specialization = @doc;
+set nocount on;
+if @doc is null
+	begin 
+	open cur
+	set @sum = 0;
+	fetch cur into @i
+	while @@FETCH_STATUS = 0
+	begin
+	set @sum = @i + @sum;
+	fetch cur into @i;
+	end;
+		close cur;
+		deallocate cur;
+		deallocate specifiedSpec
+		end;
+		else
+		begin
+		open specifiedSpec;
+		set @sum = 0;
+		fetch from specifiedSpec into @i;
+		while @@FETCH_STATUS = 0
+		begin
+		set @sum  = @i + @sum;
+		fetch from specifiedSpec into @i;
+		end;
+		close specifiedSpec;
+		deallocate cur
+		deallocate specifiedSpec ;
+		return @sum;
+		end;
+	
+
+drop procedure SumOfSalaries;
+
+--execute SumOfSalaries 'pediatrist';
+DECLARE @x Int;
+EXECUTE @x = SumOfSalaries 'pediatrist';
+PRINT @x;
+
+
+------------------------------------------------------TRIGGERS-----------------------------------------------------------------------------------------------------------
+
+--1st trigger
+--After insert trigger, after inserting new Doctor we copy all doctors (also the newest one) into the Doctor History table - which keeps track of all doctors who has ever worked here
+
+drop trigger delDoctor;
+
+CREATE TRIGGER delDoctor
+ON Doctor
+AFTER INSERT
+AS
+    DECLARE personDeleted CURSOR FOR SELECT IdDoctor FROM Doctor;
+    DECLARE @docid int;
+    DECLARE @count int;
+	SET NOCOUNT ON;
+BEGIN
+    SET @count = (SELECT COUNT(IdDoctor) FROM Doctor);
+    
+    IF @count  >= 1
+	BEGIN
+		OPEN personDeleted;
+		FETCH personDeleted INTO @docid;
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			INSERT INTO DoctorHistory SELECT * FROM Doctor WHERE IdDoctor = @docid;
+			FETCH personDeleted INTO @docid;
+		END;
+		CLOSE personDeleted;
+	END;
+	
+	DEALLOCATE personDeleted;
+END;
+
+
+DELETE FROM Doctor where IdDoctor = 3;
+INSERT INTO Doctor VALUES(4,'Ola', 'Marciniak', 'surgeon', 123488089, 6000);
+select * from doctorHistory;
+select * from Doctor;
+
+
+
+
+
+--2nd trigger updating diagnose's name and prints the total number of all patients ( changing diagnose of all the  patients);
+DROP TRIGGER newDiagnose;
+
+CREATE TRIGGER newDiagnose ON patientsCard
+AFTER UPDATE
+AS
+	SET NOCOUNT ON;
+	DECLARE @changeDiagnose varchar(40), @numOfPatients int;
+	DECLARE diag CURSOR FOR SELECT diagnose from patientsCard 
+BEGIN
+		SELECT @numOfPatients = (SELECT COUNT(IdPatientCard) FROM PatientsCard);
+		Print 'The new diagnose is  : '
+		OPEN diag;
+		FETCH FROM diag INTO @changeDiagnose;
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			FETCH FROM diag INTO @changeDiagnose;
+		END;
+		CLOSE diag;
+		DEALLOCATE diag;
+		Print @changeDiagnose + ( ' and it is the' + cast(@numOfPatients as varchar(40))+ 'th diagnose') ;
+	END;
+
+
+update patientsCard set diagnose = 'covid-19';
+select * from PatientsCard;
+
+
+
+--3rd trigger
+--this trigger shows the newest inserted Patient's name and displays the number of this patient by summing up all the patients.
+DROP TRIGGER newPatient;
+
+CREATE TRIGGER newPatient ON Patient
+AFTER INSERT
+AS
+	SET NOCOUNT ON;
+	DECLARE @newPatientName varchar(40), @numOfPatients int;
+	DECLARE patcur CURSOR FOR SELECT Pname FROM Patient;
+BEGIN
+		SELECT @numOfPatients = (SELECT COUNT(IdPatient) FROM Patient);
+		Print 'Your new Patient is here, his name is : '
+		OPEN patcur;
+		FETCH FROM patcur INTO @newPatientName;
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			FETCH FROM patcur INTO @newPatientName;
+		END;
+		CLOSE patcur;
+		DEALLOCATE patcur;
+		Print @newPatientName + ', it is the ' + cast(@numOfPatients as varchar(40))+ 'th patient' ;
+	END;
+
+insert into Patient values(6, 'sandra', 'sand', '123432111', 'Swinoujscie', 'Boahaterow 1', 72-600, '2000-06-12');
+
+
